@@ -18,7 +18,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     init_directory()?;
 
     let home_dir = home::home_dir();
-    let parent_dir = PathBuf::from(format!("{}/.pgpman", home_dir.unwrap().display()));
+    let home_dir = match home_dir {
+        Some(dir) => dir,
+        None => {
+            println!("Could not find home directory");
+            return Ok(());
+        }
+    };
+    let parent_dir = PathBuf::from(format!("{}/.pgpman", home_dir.display()));
     let files: Vec<String> = list_directory_contents(&parent_dir)?;
 
     // setup terminal
